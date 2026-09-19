@@ -10,6 +10,7 @@ public class Cita {
     private String servicio;
     private int duracionMinutos;
     private String estado;
+    private boolean confirmacion; 
 
     public Cita() {
         this.estado = "pendiente";
@@ -71,5 +72,14 @@ public class Cita {
 
     public void setEstado(String estado) {
         this.estado = estado;
+       
     }
+    public boolean isConfirmacion() {
+		return confirmacion;
+	}
+
+	public void setConfirmacion(boolean confirmacion) {
+		this.confirmacion = confirmacion;
+	}
+
 }
