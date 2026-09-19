@@ -29,6 +29,7 @@ public class CitaDAO {
             ps.setString(3, item.getServicio());
             ps.setInt(4, item.getDuracionMinutos());
             ps.setString(5, item.getEstado());
+            ps.setBoolean(6, item.isConfirmacion());
 
             ps.executeUpdate();
 
@@ -65,6 +66,8 @@ public class CitaDAO {
                 cita.setServicio(rs.getString("servicio"));
                 cita.setDuracionMinutos(rs.getInt("duracion_minutos"));
                 cita.setEstado(rs.getString("estado"));
+                cita.setConfirmacion(rs.getBoolean("confirmacion")
+                	);
 
                 lista.add(cita);
             }
@@ -120,7 +123,8 @@ public class CitaDAO {
             ps.setString(3, item.getServicio());
             ps.setInt(4, item.getDuracionMinutos());
             ps.setString(5, item.getEstado());
-            ps.setInt(6, item.getId());
+            ps.setInt(7, item.getId());
+            ps.setBoolean(6,item.isConfirmacion());
 
             return ps.executeUpdate() > 0;
         }
@@ -134,6 +138,7 @@ public class CitaDAO {
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, id);
+            
 
             return ps.executeUpdate() > 0;
         }

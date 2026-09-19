@@ -25,6 +25,7 @@ public class VentanaPrincipal extends JFrame {
     private JComboBox<String> cmbServicio;
     private JTextField txtDuracion;
     private JComboBox<String> cmbEstado;
+    private JCheckBox chkConfirmacionLlamada;
 
     private JTable tabla;
     private DefaultTableModel modeloTabla;
@@ -183,6 +184,9 @@ public class VentanaPrincipal extends JFrame {
                 "cancelada"
         });
         estilizarCombo(cmbEstado);
+        
+        chkConfirmacionLlamada =
+                new JCheckBox("Requiere confirmación por llamada");
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -287,7 +291,8 @@ public class VentanaPrincipal extends JFrame {
                         "Fecha y hora",
                         "Servicio",
                         "Duración",
-                        "Estado"
+                        "Estado",
+                        "Confirmacion"
                 }, 0
         ) {
             @Override
@@ -451,6 +456,7 @@ public class VentanaPrincipal extends JFrame {
                         cita.getServicio(),
                         cita.getDuracionMinutos(),
                         cita.getEstado()
+                       
                 });
             }
 
@@ -483,6 +489,8 @@ public class VentanaPrincipal extends JFrame {
             cita.setServicio(cmbServicio.getSelectedItem().toString());
             cita.setDuracionMinutos(Integer.parseInt(txtDuracion.getText().trim()));
             cita.setEstado("pendiente");
+            cita.setConfirmacion(chkConfirmacionLlamada.isSelected()
+            	);
 
             citaDAO.crear(cita);
 
@@ -540,6 +548,9 @@ public class VentanaPrincipal extends JFrame {
             cita.setServicio(cmbServicio.getSelectedItem().toString());
             cita.setDuracionMinutos(Integer.parseInt(txtDuracion.getText().trim()));
             cita.setEstado(cmbEstado.getSelectedItem().toString());
+            cita.setConfirmacion(chkConfirmacionLlamada.isSelected()
+            	);
+            
 
             citaDAO.actualizar(cita);
 

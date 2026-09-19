@@ -12,18 +12,20 @@ public class Cita {
     private String estado;
     private boolean confirmacion; 
 
-    public Cita() {
+    
+	public Cita() {
         this.estado = "pendiente";
     }
 
     public Cita(int id, String cliente, LocalDateTime fechaHora,
-                String servicio, int duracionMinutos, String estado) {
+                String servicio, int duracionMinutos, String estado, boolean confirmacion) {
         this.id = id;
         this.cliente = cliente;
         this.fechaHora = fechaHora;
         this.servicio = servicio;
         this.duracionMinutos = duracionMinutos;
         this.estado = estado;
+        this.confirmacion = confirmacion;
     }
 
     public int getId() {
