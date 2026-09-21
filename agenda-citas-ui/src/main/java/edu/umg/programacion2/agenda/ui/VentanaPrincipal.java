@@ -1,6 +1,7 @@
 package edu.umg.programacion2.agenda.ui;
 
 import edu.umg.programacion2.agenda.dao.CitaDAO;
+
 import edu.umg.programacion2.agenda.modelo.Cita;
 
 import javax.swing.*;
@@ -18,6 +19,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class VentanaPrincipal extends JFrame {
 
@@ -36,7 +39,8 @@ public class VentanaPrincipal extends JFrame {
     private JButton btnActualizar;
     private JButton btnEliminar;
     private JButton btnLimpiar;
-    private JButton btnTotales;  
+    private JButton btnTotales; 
+    private JButton btnAgrupar;   
 
     private JLabel lblModo;
     private JLabel lblTotalCitas;
@@ -584,10 +588,17 @@ public class VentanaPrincipal extends JFrame {
                 Color.WHITE,
                 new Color(184, 83, 101)
         );
+        btnAgrupar = crearBoton(
+                "Agrupar por cliente",
+                Color.WHITE,
+                rosaOscuro,
+                rosaClaro
+        );
 
         izquierda.add(btnNuevo);
         izquierda.add(btnLimpiar);
         izquierda.add(btnTotales); 
+        izquierda.add(btnAgrupar); 
 
         derecha.add(btnGuardar);
         derecha.add(btnActualizar);
@@ -618,7 +629,13 @@ public class VentanaPrincipal extends JFrame {
         btnEliminar.addActionListener(
                 e -> eliminarCita()
         );
-
+        btnTotales.addActionListener(      
+                e -> mostrarTotales()
+        );
+       
+        btnAgrupar.addActionListener(
+                e -> mostrarAgrupacionPorCliente()
+        );
         
 
         return panel;
@@ -1034,6 +1051,73 @@ public class VentanaPrincipal extends JFrame {
             JOptionPane.showMessageDialog(
                     this,
                     "No se pudieron calcular los totales.\n"
+                            + ex.getMessage(),
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+            );
+        }
+    }
+    private void mostrarAgrupacionPorCliente() {
+
+        try {
+
+            List<Cita> citas = citaDAO.listarTodos();
+
+            if (citas.isEmpty()) {
+
+                JOptionPane.showMessageDialog(
+                        this,
+                        "No hay citas registradas.",
+                        "Citas por cliente",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
+
+                return;
+            }
+
+            Map<String, Integer> conteo = new LinkedHashMap<String, Integer>();
+
+            for (Cita cita : citas) {
+
+                String cliente = cita.getCliente().trim();
+
+                if (conteo.containsKey(cliente)) {
+                    conteo.put(cliente, conteo.get(cliente) + 1);
+                } else {
+                    conteo.put(cliente, 1);
+                }
+            }
+
+            StringBuilder texto = new StringBuilder();
+
+            for (Map.Entry<String, Integer> entrada : conteo.entrySet()) {
+
+                texto.append(entrada.getKey())
+                        .append(": ")
+                        .append(entrada.getValue())
+                        .append(entrada.getValue() == 1 ? " cita" : " citas")
+                        .append("\n");
+            }
+
+            JTextArea area = new JTextArea(texto.toString());
+            area.setEditable(false);
+            area.setFont(new Font("SansSerif", Font.PLAIN, 13));
+
+            JScrollPane scroll = new JScrollPane(area);
+            scroll.setPreferredSize(new Dimension(340, 220));
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    scroll,
+                    "Citas por cliente",
+                    JOptionPane.INFORMATION_MESSAGE
+            );
+
+        } catch (Exception ex) {
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "No se pudo agrupar las citas.\n"
                             + ex.getMessage(),
                     "Error",
                     JOptionPane.ERROR_MESSAGE
