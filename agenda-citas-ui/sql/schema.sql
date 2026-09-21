@@ -42,4 +42,5 @@ CREATE TABLE IF NOT EXISTS citas (
     servicio VARCHAR(200) NOT NULL,
     duracion_minutos INT NOT NULL,
     estado VARCHAR(20) NOT NULL
+    confirmacion BOOLEAN NOT NULL DEFAULT FALSE
 );

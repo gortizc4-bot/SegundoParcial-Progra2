@@ -1,6 +1,7 @@
 package edu.umg.programacion2.agenda.dao;
 
 import edu.umg.programacion2.agenda.config.ConexionBD;
+
 import edu.umg.programacion2.agenda.modelo.Cita;
 
 import java.sql.Connection;
@@ -17,9 +18,9 @@ public class CitaDAO {
 
     public Cita crear(Cita item) throws SQLException {
 
-        String sql = "INSERT INTO citas "
-                + "(cliente, fecha_hora, servicio, duracion_minutos, estado) "
-                + "VALUES (?, ?, ?, ?, ?)";
+    	String sql = "INSERT INTO citas "
+    	        + "(cliente, fecha_hora, servicio, duracion_minutos, estado, confirmacion) "
+    	        + "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = ConexionBD.obtenerConexion();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -48,8 +49,7 @@ public class CitaDAO {
         List<Cita> lista = new ArrayList<>();
 
         String sql = "SELECT id, cliente, fecha_hora, servicio, "
-                + "duracion_minutos, estado FROM citas ORDER BY fecha_hora";
-
+                + "duracion_minutos, estado, confirmacion FROM citas ORDER BY fecha_hora";
         try (Connection conn = ConexionBD.obtenerConexion();
              PreparedStatement ps = conn.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -78,8 +78,8 @@ public class CitaDAO {
 
     public Optional<Cita> buscarPorId(int id) throws SQLException {
 
-        String sql = "SELECT id, cliente, fecha_hora, servicio, "
-                + "duracion_minutos, estado FROM citas WHERE id = ?";
+    	String sql = "SELECT id, cliente, fecha_hora, servicio, "
+    	        + "duracion_minutos, estado, confirmacion FROM citas WHERE id = ?";
 
         try (Connection conn = ConexionBD.obtenerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -100,6 +100,7 @@ public class CitaDAO {
                     cita.setServicio(rs.getString("servicio"));
                     cita.setDuracionMinutos(rs.getInt("duracion_minutos"));
                     cita.setEstado(rs.getString("estado"));
+                    cita.setConfirmacion(rs.getBoolean("confirmacion"));
 
                     return Optional.of(cita);
                 }
@@ -111,9 +112,9 @@ public class CitaDAO {
 
     public boolean actualizar(Cita item) throws SQLException {
 
-        String sql = "UPDATE citas SET cliente = ?, fecha_hora = ?, "
-                + "servicio = ?, duracion_minutos = ?, estado = ? "
-                + "WHERE id = ?";
+    	String sql = "UPDATE citas SET cliente = ?, fecha_hora = ?, "
+    	        + "servicio = ?, duracion_minutos = ?, estado = ?, confirmacion = ? "
+    	        + "WHERE id = ?";
 
         try (Connection conn = ConexionBD.obtenerConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -123,8 +124,9 @@ public class CitaDAO {
             ps.setString(3, item.getServicio());
             ps.setInt(4, item.getDuracionMinutos());
             ps.setString(5, item.getEstado());
+            ps.setBoolean(6, item.isConfirmacion());
             ps.setInt(7, item.getId());
-            ps.setBoolean(6,item.isConfirmacion());
+            
 
             return ps.executeUpdate() > 0;
         }
@@ -140,7 +142,11 @@ public class CitaDAO {
             ps.setInt(1, id);
             
 
-            return ps.executeUpdate() > 0;
+            return ps.executeUpdate() > 0;  
         }
     }
+            	
+
+        	
+    
 }
