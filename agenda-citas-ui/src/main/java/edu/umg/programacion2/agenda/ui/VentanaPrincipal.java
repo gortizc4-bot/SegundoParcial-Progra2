@@ -763,9 +763,14 @@ public class VentanaPrincipal extends JFrame {
 
     private void cargarCitas() {
 
-        modeloTabla.setRowCount(0);
+        // Evita que quede una fila seleccionada mientras se actualiza la tabla
+        tabla.clearSelection();
+
+        idSeleccionado = 0;
 
         try {
+
+            modeloTabla.setRowCount(0);
 
             List<Cita> citas = citaDAO.listarTodos();
 
@@ -779,9 +784,7 @@ public class VentanaPrincipal extends JFrame {
                                 cita.getServicio(),
                                 cita.getDuracionMinutos(),
                                 cita.getEstado(),
-                                cita.isConfirmacion()
-                                        ? "Sí"
-                                        : "No"
+                                cita.isConfirmacion() ? "Sí" : "No"
                         }
                 );
             }
@@ -1235,19 +1238,19 @@ public class VentanaPrincipal extends JFrame {
 
         int filaVista = tabla.getSelectedRow();
 
-        if (filaVista == -1) {
+        if (filaVista < 0 || filaVista >= tabla.getRowCount()) {
             return;
         }
 
-        int fila =
-                tabla.convertRowIndexToModel(filaVista);
+        int fila = tabla.convertRowIndexToModel(filaVista);
 
-        idSeleccionado =
-                Integer.parseInt(
-                        modeloTabla
-                                .getValueAt(fila, 0)
-                                .toString()
-                );
+        if (fila < 0 || fila >= modeloTabla.getRowCount()) {
+            return;
+        }
+
+        idSeleccionado = Integer.parseInt(
+                modeloTabla.getValueAt(fila, 0).toString()
+        );
 
         txtCliente.setText(
                 modeloTabla.getValueAt(fila, 1).toString()
